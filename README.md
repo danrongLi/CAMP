@@ -53,6 +53,6 @@ python camp4.py
 
 [Calculate_Quality_Metrics](Calculate_Quality_Metrics): Contains the code for calculating the metacell quality metrics for all methods.
 
-[our_optimization_SEACells](our_optimization_SEACells): Contains the 2 files we optimized for SEACells method.
+[Our_Optimization_SEACells](Our_Optimization_SEACells): Contains the 2 files we optimized for SEACells method.
 
 

@@ -55,4 +55,8 @@ python camp4.py
 
 [Our_Optimization_SEACells](Our_Optimization_SEACells): Contains the 2 files we optimized for SEACells method.
 
+[rare_cell_recovery](rare_cell_recovery): Contains rare cell recovery experiments.
+
+[robustness](robustness): Contains robustness experiments.
+
 

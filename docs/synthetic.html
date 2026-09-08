@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Toy data walk through · CAMP documentation</title>
+<meta name="description" content="Generate data, construct CAMP metacells, and calculate quality metrics.">
+<meta name="theme-color" content="#ffffff"><link rel="icon" href="data:,">
+<link rel="stylesheet" href="assets/style.css"><script defer src="assets/app.js"></script>
+</head><body><a class="skip" href="#main">Skip to content</a>
+<header class="topbar"><a class="brand" href="index.html"><strong>CAMP</strong><span class="brand-detail">Documentation</span></a>
+<div class="top-actions"><a class="repo-link" href="https://github.com/danrongLi/CAMP">GitHub</a><button class="menu-toggle" aria-expanded="false" aria-controls="sidebar" type="button">Menu</button></div></header>
+<div class="layout"><aside class="sidebar" id="sidebar"><nav aria-label="Documentation"><a href="index.html"><span>Installation</span></a><a href="regular.html"><span>Regular CAMP</span></a><a href="on-the-fly.html"><span>On-the-fly CAMP</span></a><a href="synthetic.html" aria-current="page"><span>Toy data walk through</span></a></nav></aside>
+<main id="main"><h1>Toy data walk through</h1><p class="lead">Generate data, construct CAMP metacells, and calculate quality metrics.</p><p>This small example uses 200 artificial cells and 500 genes. It runs CAMP1–4 using the existing on-the-fly functions, then evaluates the resulting memberships. No dataset or partition download is needed.</p><p>The purpose is to learn the workflow and check your installation—not to compare methods scientifically or reproduce the manuscript results. These data do not represent real PBMCs.</p>
+        <h2 id="run">Run the complete example</h2><p>First complete <a href="index.html">Installation</a>. <a href="data:text/plain;charset=utf-8;base64,IiIiU3ludGhldGljIHRlYWNoaW5nIHdvcmtmbG93OyBydW4gZnJvbSBhIGNsb25lIG9mIHRoZSBDQU1QIHJlcG9zaXRvcnkuCgpDQU1QIGZ1bmN0aW9ucyBhcmUgbG9hZGVkIGZyb20gdGhlIGV4aXN0aW5nIG9uLXRoZS1mbHkgc2NyaXB0cywgdW5jaGFuZ2VkLgpNZXRyaWMgZm9ybXVsYXMgZm9sbG93IENhbGN1bGF0ZV9RdWFsaXR5X01ldHJpY3MvY2FtcDEucHkuIFRoaXMgZG9lcyBub3QgcnVuIHRoZQptYW51c2NyaXB0IGJlbmNobWFyayBhbmQgZG9lcyBub3QgcmVxdWlyZSBkb3dubG9hZGVkIFBCTUMgZGF0YSBvciBwYXJ0aXRpb25zLgoiIiIKCiMgU0VDVElPTjogc2V0dXAKZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCmltcG9ydCBhcmdwYXJzZQppbXBvcnQganNvbgppbXBvcnQgb3MKaW1wb3J0IHJ1bnB5CmZyb20gaW1wb3J0bGliLm1ldGFkYXRhIGltcG9ydCB2ZXJzaW9uCgpwYXJzZXIgPSBhcmdwYXJzZS5Bcmd1bWVudFBhcnNlcihkZXNjcmlwdGlvbj1fX2RvY19fKQpwYXJzZXIuYWRkX2FyZ3VtZW50KCItLXJlcG8iLCB0eXBlPVBhdGgsIGRlZmF1bHQ9UGF0aC5jd2QoKSkKcGFyc2VyLmFkZF9hcmd1bWVudCgiLS1vdXRwdXQiLCB0eXBlPVBhdGgsIGRlZmF1bHQ9UGF0aCgidHV0b3JpYWxfcnVucy9zeW50aGV0aWMiKSkKYXJncyA9IHBhcnNlci5wYXJzZV9hcmdzKCkKCnJlcG8gPSBhcmdzLnJlcG8uZXhwYW5kdXNlcigpLnJlc29sdmUoKQpvdXQgPSBhcmdzLm91dHB1dC5leHBhbmR1c2VyKCkucmVzb2x2ZSgpCnNvdXJjZSA9IHJlcG8gLyAiTWV0YUNlbGxfQ29uc3RydWN0aW9uX1BpcGVsaW5lL0NBTVAvb25fdGhlX2ZseV9mb3JfaHVtYW5fZmV0YWxfYXRsYXNfZGF0YSIKZm9yIG51bWJlciBpbiByYW5nZSgxLCA1KToKICAgIGlmIG5vdCAoc291cmNlIC8gZiJDQU1Qe251bWJlcn0ucHkiKS5pc19maWxlKCk6CiAgICAgICAgcmFpc2UgRmlsZU5vdEZvdW5kRXJyb3IoIlJ1biBmcm9tIHRoZSBDQU1QIHJlcG9zaXRvcnkgcm9vdCBvciBzZXQgLS1yZXBvLiIpCm91dC5ta2RpcihwYXJlbnRzPVRydWUsIGV4aXN0X29rPUZhbHNlKSAgIyBSZWZ1c2UgdG8gb3ZlcndyaXRlIGEgcHJldmlvdXMgcnVuLgpvcy5lbnZpcm9uLnNldGRlZmF1bHQoIk1QTENPTkZJR0RJUiIsIHN0cihvdXQgLyAiX2NhY2hlL21hdHBsb3RsaWIiKSkKb3MuZW52aXJvbi5zZXRkZWZhdWx0KCJOVU1CQV9DQUNIRV9ESVIiLCBzdHIob3V0IC8gIl9jYWNoZS9udW1iYSIpKQoKaW1wb3J0IGFubmRhdGEgYXMgYWQKaW1wb3J0IG51bXB5IGFzIG5wCmltcG9ydCBwYW5kYXMgYXMgcGQKaW1wb3J0IHNjYW5weSBhcyBzYwpmcm9tIHNjaXB5IGltcG9ydCBzcGFyc2UKZnJvbSBza2xlYXJuLm1ldHJpY3MgaW1wb3J0IHBhaXJ3aXNlX2Rpc3RhbmNlcwpmcm9tIHNrbGVhcm4ucHJlcHJvY2Vzc2luZyBpbXBvcnQgbm9ybWFsaXplCgpzZWVkID0gNDIKZ2FtbWEgPSAxMAoKIyBTRUNUSU9OOiBkYXRhCnJuZyA9IG5wLnJhbmRvbS5kZWZhdWx0X3JuZyhzZWVkKQp0eXBlcyA9IG5wLnJlcGVhdChbIlR5cGUgQSIsICJUeXBlIEIiLCAiVHlwZSBDIiwgIlR5cGUgRCJdLCA1MCkKYmFja2dyb3VuZCA9IHJuZy5nYW1tYShzaGFwZT0xLjUsIHNjYWxlPTEuMiwgc2l6ZT01MDApCm1lYW5zID0gbnAudGlsZShiYWNrZ3JvdW5kLCAobGVuKHR5cGVzKSwgMSkpCmZvciBpbmRleCwgbGFiZWwgaW4gZW51bWVyYXRlKFsiVHlwZSBBIiwgIlR5cGUgQiIsICJUeXBlIEMiLCAiVHlwZSBEIl0pOgogICAgbWVhbnNbdHlwZXMgPT0gbGFiZWwsIGluZGV4ICogMjA6KGluZGV4ICsgMSkgKiAyMF0gKj0gNgptZWFucyAqPSBybmcubG9nbm9ybWFsKG1lYW49MCwgc2lnbWE9MC4yLCBzaXplPShsZW4odHlwZXMpLCAxKSkKY291bnRzID0gcm5nLm5lZ2F0aXZlX2Jpbm9taWFsKG49MywgcD0zIC8gKDMgKyBtZWFucykpLmFzdHlwZShucC5mbG9hdDMyKQoKYWRhdGEgPSBhZC5Bbm5EYXRhKAogICAgWD1zcGFyc2UuY3NyX21hdHJpeChjb3VudHMpLAogICAgb2JzPXBkLkRhdGFGcmFtZSgKICAgICAgICB7ImNlbGxfdHlwZSI6IHBkLkNhdGVnb3JpY2FsKHR5cGVzKX0sCiAgICAgICAgaW5kZXg9W2YidG95X2NlbGxfe2k6MDNkfSIgZm9yIGkgaW4gcmFuZ2UobGVuKHR5cGVzKSldLAogICAgKSwKICAgIHZhcj1wZC5EYXRhRnJhbWUoaW5kZXg9W2YiVG95R2VuZXtpOjAzZH0iIGZvciBpIGluIHJhbmdlKGNvdW50cy5zaGFwZVsxXSldKSwKKQphZGF0YS5sYXllcnNbImNvdW50cyJdID0gYWRhdGEuWC5jb3B5KCkKYWRhdGEudW5zWyJkYXRhX25vdGljZSJdID0gIlN5bnRoZXRpYyB0ZWFjaGluZyBkYXRhLCBub3QgYmlvbG9naWNhbCBvYnNlcnZhdGlvbnMuIgpwcmludCgiR2VuZXJhdGVkOiIsIGFkYXRhLm5fb2JzLCAiY2VsbHMgYW5kIiwgYWRhdGEubl92YXJzLCAiZ2VuZXMiKQoKIyBTRUNUSU9OOiBwcmVwYXJlCnNjLnBwLm5vcm1hbGl6ZV90b3RhbChhZGF0YSwgdGFyZ2V0X3N1bT0xMDAwMCkKc2MucHAubG9nMXAoYWRhdGEpCnNjLnBwLmhpZ2hseV92YXJpYWJsZV9nZW5lcyhhZGF0YSwgbl90b3BfZ2VuZXM9MjAwLCBmbGF2b3I9InNldXJhdCIpCnBjYV9kYXRhID0gYWRhdGFbOiwgYWRhdGEudmFyWyJoaWdobHlfdmFyaWFibGUiXV0uY29weSgpCnNjLnRsLnBjYShwY2FfZGF0YSwgbl9jb21wcz0yMCwgemVyb19jZW50ZXI9RmFsc2UsIHJhbmRvbV9zdGF0ZT1zZWVkKQphZGF0YS5vYnNtWyJYX3BjYSJdID0gcGNhX2RhdGEub2JzbVsiWF9wY2EiXS5jb3B5KCkKCiMgQSBzaGFyZWQgZGlmZnVzaW9uIG1hcCBpcyB1c2VkIG9ubHkgdG8gZXZhbHVhdGUgdGhlIHJlc3VsdGluZyBwYXJ0aXRpb25zLgpzYy5wcC5uZWlnaGJvcnMoYWRhdGEsIG5fbmVpZ2hib3JzPTE1LCB1c2VfcmVwPSJYX3BjYSIsIHJhbmRvbV9zdGF0ZT1zZWVkKQpzYy50bC5kaWZmbWFwKGFkYXRhLCBuX2NvbXBzPTE1LCByYW5kb21fc3RhdGU9c2VlZCkKYWRhdGEud3JpdGVfaDVhZChvdXQgLyAic3ludGhldGljX3ByZXBhcmVkLmg1YWQiKQoKIyBTRUNUSU9OOiBwYXJ0aXRpb24KbWVtYmVyc2hpcHMgPSB7fQpmb3IgbnVtYmVyIGluIHJhbmdlKDEsIDUpOgogICAgbWV0aG9kID0gZiJDQU1Qe251bWJlcn0iCiAgICBmdW5jdGlvbnMgPSBydW5weS5ydW5fcGF0aChzdHIoc291cmNlIC8gZiJ7bWV0aG9kfS5weSIpLCBydW5fbmFtZT1mInRveV97bWV0aG9kfSIpCiAgICBydW5fZGF0YSA9IGFkYXRhLmNvcHkoKQogICAgaWYgbnVtYmVyID09IDI6CiAgICAgICAgcnVuX2RhdGEub2JzbVsiWF91bml0Il0gPSBub3JtYWxpemUoCiAgICAgICAgICAgIHJ1bl9kYXRhLm9ic21bIlhfcGNhIl0uYXN0eXBlKG5wLmZsb2F0MzIpLCBheGlzPTEKICAgICAgICApCiAgICBucC5yYW5kb20uc2VlZChzZWVkKQogICAgbV9saXN0LCBfID0gZnVuY3Rpb25zWyJjcmVhdGVfbV9saXN0Il0ocnVuX2RhdGEsIFtnYW1tYV0pCiAgICBydW5uZXIgPSAiU0VBQ2VsbHNfbWNSaWdvcl9maXhlZCIgaWYgbnVtYmVyID09IDQgZWxzZSAiU0VBQ2VsbHNfbWNSaWdvciIKICAgIGNzdl9wYXRoID0gb3V0IC8gZiJ7bWV0aG9kLmxvd2VyKCl9X21lbWJlcnNoaXAuY3N2IgogICAgZnVuY3Rpb25zW3J1bm5lcl0oCiAgICAgICAgcnVuX2RhdGEsCiAgICAgICAgW2dhbW1hXSwKICAgICAgICBtX2xpc3QsCiAgICAgICAgb3V0cHV0X2ZpbGU9c3RyKGNzdl9wYXRoKSwKICAgICAgICByZWR1Y3Rpb25fa2V5PSJYX3NpbWkiIGlmIG51bWJlciBpbiAoMiwgMykgZWxzZSAiWF9wY2EiLAogICAgICAgIGFubm90YXRpb25zPU5vbmUsCiAgICApCiAgICBmcmFtZSA9IHBkLnJlYWRfY3N2KGNzdl9wYXRoLCBpbmRleF9jb2w9MCwgZHR5cGU9c3RyKQogICAgaWYgbm90IGZyYW1lLmluZGV4LmlzX3VuaXF1ZSBvciBzZXQoZnJhbWUuaW5kZXgpICE9IHNldChhZGF0YS5vYnNfbmFtZXMpOgogICAgICAgIHJhaXNlIFZhbHVlRXJyb3IoZiJ7bWV0aG9kfTogbWVtYmVyc2hpcCBjZWxsIElEcyBkbyBub3QgbWF0Y2ggdGhlIGlucHV0LiIpCiAgICBsYWJlbHMgPSBmcmFtZVtzdHIoZ2FtbWEpXS5yZWluZGV4KGFkYXRhLm9ic19uYW1lcykKICAgIGlmIGxhYmVscy5pc25hKCkuYW55KCk6CiAgICAgICAgcmFpc2UgVmFsdWVFcnJvcihmInttZXRob2R9OiBtaXNzaW5nIG1lbWJlcnNoaXBzLiIpCiAgICBtZW1iZXJzaGlwc1ttZXRob2RdID0gbGFiZWxzCiAgICBwcmludChtZXRob2QsICJwcm9kdWNlZCIsIGxhYmVscy5udW5pcXVlKCksICJub25lbXB0eSBtZXRhY2VsbHMiKQoKIyBTRUNUSU9OOiBtZXRyaWNzCmRpZmZ1c2lvbiA9IG5wLmFzYXJyYXkoYWRhdGEub2JzbVsiWF9kaWZmbWFwIl0pCmV4cHJlc3Npb24gPSBhZGF0YS5YLnRvYXJyYXkoKSAgIyBTbWFsbCB0ZWFjaGluZyBtYXRyaXggb25seTogMjAwIHggNTAwLgpwZXJfbWV0YWNlbGwgPSBbXQoKZm9yIG1ldGhvZCwgbGFiZWxzIGluIG1lbWJlcnNoaXBzLml0ZW1zKCk6CiAgICBncm91cHMgPSB7CiAgICAgICAgbWV0YWNlbGw6IG5wLmZsYXRub256ZXJvKGxhYmVscy50b19udW1weSgpID09IG1ldGFjZWxsKQogICAgICAgIGZvciBtZXRhY2VsbCBpbiBsYWJlbHMudW5pcXVlKCkKICAgIH0KICAgIGNlbnRyb2lkcyA9IG5wLnZzdGFjayhbZGlmZnVzaW9uW2luZGljZXNdLm1lYW4oYXhpcz0wKSBmb3IgaW5kaWNlcyBpbiBncm91cHMudmFsdWVzKCldKQogICAgZGlzdGFuY2VzID0gcGFpcndpc2VfZGlzdGFuY2VzKGNlbnRyb2lkcykKICAgIG5wLmZpbGxfZGlhZ29uYWwoZGlzdGFuY2VzLCBucC5pbmYpCiAgICBzZXBhcmF0aW9ucyA9IGRpc3RhbmNlcy5taW4oYXhpcz0xKSBpZiBsZW4oZ3JvdXBzKSA+IDEgZWxzZSBucC5hcnJheShbbnAubmFuXSkKCiAgICBmb3IgKG1ldGFjZWxsLCBpbmRpY2VzKSwgc2VwYXJhdGlvbiBpbiB6aXAoZ3JvdXBzLml0ZW1zKCksIHNlcGFyYXRpb25zKToKICAgICAgICBjZWxsX3R5cGVzID0gYWRhdGEub2JzWyJjZWxsX3R5cGUiXS5pbG9jW2luZGljZXNdCiAgICAgICAgcHVyaXR5ID0gY2VsbF90eXBlcy52YWx1ZV9jb3VudHMoKS5tYXgoKSAvIGxlbihpbmRpY2VzKQogICAgICAgIGNvbXBhY3RuZXNzID0gLW5wLnZhcihkaWZmdXNpb25baW5kaWNlc10sIGF4aXM9MCkubWVhbigpCiAgICAgICAgYmxvY2sgPSBleHByZXNzaW9uW2luZGljZXNdCiAgICAgICAgaW52ID0gbnAucGVyY2VudGlsZShibG9jay52YXIoYXhpcz0wKSAvIChibG9jay5tZWFuKGF4aXM9MCkgKyAxZS04KSwgOTUpCiAgICAgICAgcGVyX21ldGFjZWxsLmFwcGVuZCh7CiAgICAgICAgICAgICJtZXRob2QiOiBtZXRob2QsCiAgICAgICAgICAgICJtZXRhY2VsbCI6IG1ldGFjZWxsLAogICAgICAgICAgICAibl9jZWxscyI6IGxlbihpbmRpY2VzKSwKICAgICAgICAgICAgInB1cml0eSI6IHB1cml0eSwKICAgICAgICAgICAgImNvbXBhY3RuZXNzIjogY29tcGFjdG5lc3MsCiAgICAgICAgICAgICJzZXBhcmF0aW9uIjogc2VwYXJhdGlvbiwKICAgICAgICAgICAgIklOViI6IGludiwKICAgICAgICB9KQoKbWV0cmljcyA9IHBkLkRhdGFGcmFtZShwZXJfbWV0YWNlbGwpCm1ldHJpY3MudG9fY3N2KG91dCAvICJtZXRyaWNzX3Blcl9tZXRhY2VsbC5jc3YiLCBpbmRleD1GYWxzZSkKZ3JvdXBlZCA9IG1ldHJpY3MuZ3JvdXBieSgibWV0aG9kIiwgc29ydD1UcnVlKQpzdW1tYXJ5ID0gZ3JvdXBlZC5hZ2coCiAgICBtZXRhY2VsbHM9KCJtZXRhY2VsbCIsICJzaXplIiksCiAgICBtaW5fY2VsbHM9KCJuX2NlbGxzIiwgIm1pbiIpLAogICAgbWVkaWFuX2NlbGxzPSgibl9jZWxscyIsICJtZWRpYW4iKSwKICAgIG1heF9jZWxscz0oIm5fY2VsbHMiLCAibWF4IiksCiAgICBtZWFuX3B1cml0eT0oInB1cml0eSIsICJtZWFuIiksCiAgICBtZWFuX2NvbXBhY3RuZXNzPSgiY29tcGFjdG5lc3MiLCAibWVhbiIpLAogICAgbWVhbl9zZXBhcmF0aW9uPSgic2VwYXJhdGlvbiIsICJtZWFuIiksCiAgICBtZWFuX0lOVj0oIklOViIsICJtZWFuIiksCikKc3VtbWFyeS50b19jc3Yob3V0IC8gIm1ldHJpY3Nfc3VtbWFyeS5jc3YiKQpwcmludCgiXG5NZXRyaWMgbWVhbnMgZ2l2ZSBlYWNoIG5vbmVtcHR5IG1ldGFjZWxsIGVxdWFsIHdlaWdodDoiKQpwcmludChzdW1tYXJ5LnRvX3N0cmluZyhmbG9hdF9mb3JtYXQ9bGFtYmRhIHZhbHVlOiBmInt2YWx1ZTouNWd9IikpCgptZXRhZGF0YSA9IHsKICAgICJzeW50aGV0aWMiOiBUcnVlLAogICAgInNlZWQiOiBzZWVkLAogICAgImdhbW1hIjogZ2FtbWEsCiAgICAiY2VsbHMiOiBhZGF0YS5uX29icywKICAgICJnZW5lcyI6IGFkYXRhLm5fdmFycywKICAgICJodmdfY291bnQiOiBpbnQoYWRhdGEudmFyWyJoaWdobHlfdmFyaWFibGUiXS5zdW0oKSksCiAgICAicGNhX2NvbXBvbmVudHMiOiAyMCwKICAgICJwY2FfemVyb19jZW50ZXIiOiBGYWxzZSwKICAgICJkaWZmbWFwX2NvbXBvbmVudHMiOiAxNSwKICAgICJpbXBsZW1lbnRhdGlvbiI6IHN0cihzb3VyY2UucmVsYXRpdmVfdG8ocmVwbykpLAogICAgInZlcnNpb25zIjoge25hbWU6IHZlcnNpb24obmFtZSkgZm9yIG5hbWUgaW4KICAgICAgICAgICAgICAgICBbIm51bXB5IiwgInNjYW5weSIsICJzY2lraXQtbGVhcm4iLCAiU0VBQ2VsbHMiLCAiaXB5d2lkZ2V0cyJdfSwKfQoob3V0IC8gInJ1bl9zZXR0aW5ncy5qc29uIikud3JpdGVfdGV4dChqc29uLmR1bXBzKG1ldGFkYXRhLCBpbmRlbnQ9MikgKyAiXG4iKQpwcmludCgiXG5SZXN1bHRzIHNhdmVkIGluIiwgb3V0KQo=" download="synthetic_walkthrough.py">Download the Python example</a> and save it in the CAMP repository root. Then run:</p><div class="code-block"><div class="code-label">Terminal</div><pre><code>python synthetic_walkthrough.py</code></pre></div><p>Everything is saved in <code>tutorial_runs/synthetic/</code>. The script refuses to overwrite an existing directory. For another run, use <code>python synthetic_walkthrough.py --output tutorial_runs/synthetic_2</code>.</p>
+        <p>The same code is explained below. If copying the blocks instead, place all four Python blocks in one file in the order shown; they share variables. The setup and data block below includes the imports.</p>
+        <h2 id="data">1. Generate the synthetic cells</h2><p>We generate four artificial cell types with 50 cells each. Each type has a different block of higher-expression genes; sampling adds cell-to-cell variation. These labels are used only to evaluate purity, not to construct metacells.</p><div class="code-block"><div class="code-label">Python — setup and data</div><pre><code>from pathlib import Path
+import argparse
+import json
+import os
+import runpy
+from importlib.metadata import version
+
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument(&quot;--repo&quot;, type=Path, default=Path.cwd())
+parser.add_argument(&quot;--output&quot;, type=Path, default=Path(&quot;tutorial_runs/synthetic&quot;))
+args = parser.parse_args()
+
+repo = args.repo.expanduser().resolve()
+out = args.output.expanduser().resolve()
+source = repo / &quot;MetaCell_Construction_Pipeline/CAMP/on_the_fly_for_human_fetal_atlas_data&quot;
+for number in range(1, 5):
+    if not (source / f&quot;CAMP{number}.py&quot;).is_file():
+        raise FileNotFoundError(&quot;Run from the CAMP repository root or set --repo.&quot;)
+out.mkdir(parents=True, exist_ok=False)  # Refuse to overwrite a previous run.
+os.environ.setdefault(&quot;MPLCONFIGDIR&quot;, str(out / &quot;_cache/matplotlib&quot;))
+os.environ.setdefault(&quot;NUMBA_CACHE_DIR&quot;, str(out / &quot;_cache/numba&quot;))
+
+import anndata as ad
+import numpy as np
+import pandas as pd
+import scanpy as sc
+from scipy import sparse
+from sklearn.metrics import pairwise_distances
+from sklearn.preprocessing import normalize
+
+seed = 42
+gamma = 10
+
+rng = np.random.default_rng(seed)
+types = np.repeat([&quot;Type A&quot;, &quot;Type B&quot;, &quot;Type C&quot;, &quot;Type D&quot;], 50)
+background = rng.gamma(shape=1.5, scale=1.2, size=500)
+means = np.tile(background, (len(types), 1))
+for index, label in enumerate([&quot;Type A&quot;, &quot;Type B&quot;, &quot;Type C&quot;, &quot;Type D&quot;]):
+    means[types == label, index * 20:(index + 1) * 20] *= 6
+means *= rng.lognormal(mean=0, sigma=0.2, size=(len(types), 1))
+counts = rng.negative_binomial(n=3, p=3 / (3 + means)).astype(np.float32)
+
+adata = ad.AnnData(
+    X=sparse.csr_matrix(counts),
+    obs=pd.DataFrame(
+        {&quot;cell_type&quot;: pd.Categorical(types)},
+        index=[f&quot;toy_cell_{i:03d}&quot; for i in range(len(types))],
+    ),
+    var=pd.DataFrame(index=[f&quot;ToyGene{i:03d}&quot; for i in range(counts.shape[1])]),
+)
+adata.layers[&quot;counts&quot;] = adata.X.copy()
+adata.uns[&quot;data_notice&quot;] = &quot;Synthetic teaching data, not biological observations.&quot;
+print(&quot;Generated:&quot;, adata.n_obs, &quot;cells and&quot;, adata.n_vars, &quot;genes&quot;)</code></pre></div><h2 id="prepare">2. Prepare the data</h2><p>Normalize the counts and log-transform expression, then compute 20 uncentered SVD components from 200 highly variable genes. This uses Scanpy's PCA call with <code>zero_center=False</code>, as in the supplied atlas preprocessing, and stores the coordinates in <code>X_pca</code>. The full 500-gene expression matrix is retained. A shared diffusion map provides the coordinates for compactness and separation.</p><div class="code-block"><div class="code-label">Python — preparation</div><pre><code>sc.pp.normalize_total(adata, target_sum=10000)
+sc.pp.log1p(adata)
+sc.pp.highly_variable_genes(adata, n_top_genes=200, flavor=&quot;seurat&quot;)
+pca_data = adata[:, adata.var[&quot;highly_variable&quot;]].copy()
+sc.tl.pca(pca_data, n_comps=20, zero_center=False, random_state=seed)
+adata.obsm[&quot;X_pca&quot;] = pca_data.obsm[&quot;X_pca&quot;].copy()
+
+# A shared diffusion map is used only to evaluate the resulting partitions.
+sc.pp.neighbors(adata, n_neighbors=15, use_rep=&quot;X_pca&quot;, random_state=seed)
+sc.tl.diffmap(adata, n_comps=15, random_state=seed)
+adata.write_h5ad(out / &quot;synthetic_prepared.h5ad&quot;)</code></pre></div><h2 id="partition">3. Construct CAMP metacells</h2><p>With <code>gamma=10</code>, 200 cells request 20 representatives. This is an average target, not a requirement that every metacell contains ten cells.</p><p><code>runpy.run_path</code> loads the functions from each existing CAMP script without running its dataset-specific main block. No CAMP algorithm is rewritten. For CAMP2 and CAMP3, <code>X_simi</code> selects the original on-the-fly similarity branch; it does not require a global similarity matrix.</p><div class="code-block"><div class="code-label">Python — CAMP1–4</div><pre><code>memberships = {}
+for number in range(1, 5):
+    method = f&quot;CAMP{number}&quot;
+    functions = runpy.run_path(str(source / f&quot;{method}.py&quot;), run_name=f&quot;toy_{method}&quot;)
+    run_data = adata.copy()
+    if number == 2:
+        run_data.obsm[&quot;X_unit&quot;] = normalize(
+            run_data.obsm[&quot;X_pca&quot;].astype(np.float32), axis=1
+        )
+    np.random.seed(seed)
+    m_list, _ = functions[&quot;create_m_list&quot;](run_data, [gamma])
+    runner = &quot;SEACells_mcRigor_fixed&quot; if number == 4 else &quot;SEACells_mcRigor&quot;
+    csv_path = out / f&quot;{method.lower()}_membership.csv&quot;
+    functions[runner](
+        run_data,
+        [gamma],
+        m_list,
+        output_file=str(csv_path),
+        reduction_key=&quot;X_simi&quot; if number in (2, 3) else &quot;X_pca&quot;,
+        annotations=None,
+    )
+    frame = pd.read_csv(csv_path, index_col=0, dtype=str)
+    if not frame.index.is_unique or set(frame.index) != set(adata.obs_names):
+        raise ValueError(f&quot;{method}: membership cell IDs do not match the input.&quot;)
+    labels = frame[str(gamma)].reindex(adata.obs_names)
+    if labels.isna().any():
+        raise ValueError(f&quot;{method}: missing memberships.&quot;)
+    memberships[method] = labels
+    print(method, &quot;produced&quot;, labels.nunique(), &quot;nonempty metacells&quot;)</code></pre></div><p>Each variant receives the same prepared input and random seed. The returned memberships are aligned by cell identifier before evaluation; row order alone is not assumed.</p>
+        <h2 id="metrics">4. Calculate quality metrics</h2><p>The calculation below uses the definitions in <code>Calculate_Quality_Metrics/camp1.py</code>. That batch script contains dataset-specific file reads, so the short metric calculations are shown directly here.</p>
+        <div class="table-wrap"><table><thead><tr><th>Metric</th><th>What it measures</th><th>Interpretation</th></tr></thead><tbody>
+        <tr><td>Purity</td><td>Fraction of cells belonging to the most common artificial type within a metacell.</td><td>Higher, up to 1.</td></tr>
+        <tr><td>Compactness</td><td>Negative mean variance across diffusion-map coordinates within a metacell.</td><td>Higher (closer to zero) means less spread.</td></tr>
+        <tr><td>Separation</td><td>Distance from a metacell's diffusion-map centroid to the nearest other centroid.</td><td>Higher means more separated centroids.</td></tr>
+        <tr><td>INV</td><td>95th percentile, across genes, of within-metacell variance divided by mean expression.</td><td>Lower indicates less normalized expression variation on this input scale.</td></tr>
+        </tbody></table></div><p>Here INV uses the log-normalized expression matrix, and all methods share the same diffusion coordinates. The summary takes an unweighted mean across metacells: a small and a large metacell contribute equally.</p><div class="code-block"><div class="code-label">Python — evaluation and summary</div><pre><code>diffusion = np.asarray(adata.obsm[&quot;X_diffmap&quot;])
+expression = adata.X.toarray()  # Small teaching matrix only: 200 x 500.
+per_metacell = []
+
+for method, labels in memberships.items():
+    groups = {
+        metacell: np.flatnonzero(labels.to_numpy() == metacell)
+        for metacell in labels.unique()
+    }
+    centroids = np.vstack([diffusion[indices].mean(axis=0) for indices in groups.values()])
+    distances = pairwise_distances(centroids)
+    np.fill_diagonal(distances, np.inf)
+    separations = distances.min(axis=1) if len(groups) &gt; 1 else np.array([np.nan])
+
+    for (metacell, indices), separation in zip(groups.items(), separations):
+        cell_types = adata.obs[&quot;cell_type&quot;].iloc[indices]
+        purity = cell_types.value_counts().max() / len(indices)
+        compactness = -np.var(diffusion[indices], axis=0).mean()
+        block = expression[indices]
+        inv = np.percentile(block.var(axis=0) / (block.mean(axis=0) + 1e-8), 95)
+        per_metacell.append({
+            &quot;method&quot;: method,
+            &quot;metacell&quot;: metacell,
+            &quot;n_cells&quot;: len(indices),
+            &quot;purity&quot;: purity,
+            &quot;compactness&quot;: compactness,
+            &quot;separation&quot;: separation,
+            &quot;INV&quot;: inv,
+        })
+
+metrics = pd.DataFrame(per_metacell)
+metrics.to_csv(out / &quot;metrics_per_metacell.csv&quot;, index=False)
+grouped = metrics.groupby(&quot;method&quot;, sort=True)
+summary = grouped.agg(
+    metacells=(&quot;metacell&quot;, &quot;size&quot;),
+    min_cells=(&quot;n_cells&quot;, &quot;min&quot;),
+    median_cells=(&quot;n_cells&quot;, &quot;median&quot;),
+    max_cells=(&quot;n_cells&quot;, &quot;max&quot;),
+    mean_purity=(&quot;purity&quot;, &quot;mean&quot;),
+    mean_compactness=(&quot;compactness&quot;, &quot;mean&quot;),
+    mean_separation=(&quot;separation&quot;, &quot;mean&quot;),
+    mean_INV=(&quot;INV&quot;, &quot;mean&quot;),
+)
+summary.to_csv(out / &quot;metrics_summary.csv&quot;)
+print(&quot;\nMetric means give each nonempty metacell equal weight:&quot;)
+print(summary.to_string(float_format=lambda value: f&quot;{value:.5g}&quot;))
+
+metadata = {
+    &quot;synthetic&quot;: True,
+    &quot;seed&quot;: seed,
+    &quot;gamma&quot;: gamma,
+    &quot;cells&quot;: adata.n_obs,
+    &quot;genes&quot;: adata.n_vars,
+    &quot;hvg_count&quot;: int(adata.var[&quot;highly_variable&quot;].sum()),
+    &quot;pca_components&quot;: 20,
+    &quot;pca_zero_center&quot;: False,
+    &quot;diffmap_components&quot;: 15,
+    &quot;implementation&quot;: str(source.relative_to(repo)),
+    &quot;versions&quot;: {name: version(name) for name in
+                 [&quot;numpy&quot;, &quot;scanpy&quot;, &quot;scikit-learn&quot;, &quot;SEACells&quot;, &quot;ipywidgets&quot;]},
+}
+(out / &quot;run_settings.json&quot;).write_text(json.dumps(metadata, indent=2) + &quot;\n&quot;)
+print(&quot;\nResults saved in&quot;, out)</code></pre></div><h2 id="read-results">5. Read the results</h2><p>Open <code>metrics_summary.csv</code> to see one row per method. Inspect the actual metacell counts and sizes alongside the four metric means. <code>metrics_per_metacell.csv</code> contains the individual values, and the four <code>camp*_membership.csv</code> files identify which cells belong together.</p>
+        <p>Smaller metacells can appear purer and more compact simply because they contain fewer cells; a singleton has purity 1 and zero within-group variance. Metrics also depend on preprocessing, gamma and random sampling. Do not interpret a winner in this artificial example as evidence of superiority on biological data.</p>
+        <p>The saved <code>synthetic_prepared.h5ad</code> contains the expression data and embeddings; <code>run_settings.json</code> records the settings and package versions. Numerical results can vary across software versions. This walkthrough covers partition quality, not donor-level differential expression or robustness benchmarking.</p></main></div>
+</body></html>

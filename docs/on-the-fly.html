@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>On-the-fly CAMP · CAMP documentation</title>
+<meta name="description" content="Run the CAMP1–4 scripts supplied for the human fetal atlas analysis.">
+<meta name="theme-color" content="#ffffff"><link rel="icon" href="data:,">
+<link rel="stylesheet" href="assets/style.css"><script defer src="assets/app.js"></script>
+</head><body><a class="skip" href="#main">Skip to content</a>
+<header class="topbar"><a class="brand" href="index.html"><strong>CAMP</strong><span class="brand-detail">Documentation</span></a>
+<div class="top-actions"><a class="repo-link" href="https://github.com/danrongLi/CAMP">GitHub</a><button class="menu-toggle" aria-expanded="false" aria-controls="sidebar" type="button">Menu</button></div></header>
+<div class="layout"><aside class="sidebar" id="sidebar"><nav aria-label="Documentation"><a href="index.html"><span>Installation</span></a><a href="regular.html"><span>Regular CAMP</span></a><a href="on-the-fly.html" aria-current="page"><span>On-the-fly CAMP</span></a></nav></aside>
+<main id="main"><h1>On-the-fly CAMP</h1><p class="lead">Run the CAMP1–4 scripts supplied for the human fetal atlas analysis.</p><h2 id="files">Script location</h2><div class="code-block"><div class="code-label">Repository folder</div><pre><code>MetaCell_Construction_Pipeline/CAMP/on_the_fly_for_human_fetal_atlas_data/
+    CAMP1.py
+    CAMP2.py
+    CAMP3.py
+    CAMP4.py</code></pre></div><p>The on-the-fly CAMP2 and CAMP3 implementations compute similarities between cells and representatives in blocks, without storing a global dense cell-by-cell similarity matrix. The input data and PCA coordinates still remain in memory.</p>
+    <h2 id="input">1. Set the input and output paths</h2><p>The original workflow uses the human fetal atlas data from the <a href="https://drive.google.com/drive/folders/1N0xDb8TC0ZPDTmAk6TE612inGBsPtofD?usp=sharing">dataset folder</a>. Edit the paths in each script's <code>if __name__ == '__main__':</code> block:</p>
+    <ul><li><strong>CAMP1:</strong> update both the <code>loompy.connect(...)</code> path and <code>input_file</code> to the same loom file. Also update the processed <code>.h5ad</code> path in <code>write_h5ad(...)</code> and the membership <code>output_file</code>.</li>
+    <li><strong>CAMP2 and CAMP3:</strong> set <code>input_file</code> to the processed <code>.h5ad</code> saved by CAMP1, and set each membership <code>output_file</code>.</li>
+    <li><strong>CAMP4:</strong> set <code>input_file</code> to that same processed file and set <code>out_csv</code>. Its supplied main block currently points to a PBMC file; change it when running the atlas data.</li></ul>
+    <p>Create the parent directories for the processed data and CSV outputs. Use a separate output CSV for each variant.</p>
+    <h2 id="gamma">2. Set the granularity</h2><p>Edit <code>gamma_list</code> in each script. The requested number of representatives is calculated from <code>int(N / gamma)</code>. Choose gamma using the retained cell count and check the actual metacell count afterward. CAMP3 needs at least two requested representatives.</p>
+    <h2 id="run">3. Run the scripts</h2><p>Run CAMP1 first if you need it to prepare the atlas data. Then run the other variants on its saved processed file:</p><div class="code-block"><div class="code-label">Terminal</div><pre><code>python MetaCell_Construction_Pipeline/CAMP/on_the_fly_for_human_fetal_atlas_data/CAMP1.py
+python MetaCell_Construction_Pipeline/CAMP/on_the_fly_for_human_fetal_atlas_data/CAMP2.py
+python MetaCell_Construction_Pipeline/CAMP/on_the_fly_for_human_fetal_atlas_data/CAMP3.py
+python MetaCell_Construction_Pipeline/CAMP/on_the_fly_for_human_fetal_atlas_data/CAMP4.py</code></pre></div><p>If the matching processed file is already available, CAMP2–4 can be run directly after their paths are updated. The input for CAMP2 and CAMP3 must include <code>obsm['X_pca']</code>.</p>
+    <p>The atlas CAMP1 script computes PCA without the scaling used by the regular PBMC CAMP1–3 scripts. Use the intended preprocessing and input consistently when comparing methods.</p><h2 id="output">Output</h2><p>Each script saves a CSV with cell identifiers as row names, one membership column per <code>gamma</code>, and corresponding <code>_is_seed</code> columns marking the initially sampled cells. For example, <code>40</code> contains memberships for <code>gamma=40</code>, and <code>40_is_seed</code> contains seed flags. The number of unique membership labels gives the actual number of metacells.</p><p>Use a new output path for each run: the original scripts can overwrite an existing CSV.</p></main></div>
+</body></html>

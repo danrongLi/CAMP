@@ -61,4 +61,5 @@ python camp4.py
 
 [differential analysis](differential_analysis): Contains differential analysis experiments.
 
+[docs](docs): Contains files to create the [tutorial](https://danrongli.github.io/CAMP/index.html) web page.
 

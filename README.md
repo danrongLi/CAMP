@@ -59,4 +59,6 @@ python camp4.py
 
 [robustness](robustness): Contains robustness experiments.
 
+[differential analysis](differential_analysis): Contains differential analysis experiments.
+
 
